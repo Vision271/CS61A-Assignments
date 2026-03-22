@@ -5,30 +5,30 @@ test = {
     {
       'cases': [
         {
-          'answer': 'e92e90f58a272e7a74651635251ade14',
+          'answer': 'f2848fe6a4a34d0bb2c12ac2c0e2b57a',
           'choices': [
             r"""
-            Pair(A, Pair(B, nil)), where:
+            Link(A, Link(B, nil)), where:
                 A is the symbol being bound,
                 B is an expression whose value should be evaluated and bound to A
             """,
             r"""
-            Pair(A, Pair(B, nil)), where:
+            Link(A, Link(B, nil)), where:
                 A is the symbol being bound,
                 B is the value that should be bound to A
             """,
             r"""
-            Pair(A, B), where:
+            Link(A, B), where:
                 A is the symbol being bound,
                 B is the value that should be bound to A
             """,
             r"""
-            Pair(A, B), where:
+            Link(A, B), where:
                 A is the symbol being bound,
                 B is an expression whose value should be evaluated and bound to A
             """,
             r"""
-            Pair('define', Pair(A, Pair(B, nil))), where:
+            Link('define', Link(A, Link(B, nil))), where:
                 A is the symbol being bound,
                 B is an expression whose value should be evaluated and bound to A
             """
@@ -39,7 +39,7 @@ test = {
           'question': 'What is the structure of the expressions argument to do_define_form?'
         },
         {
-          'answer': '0ed53dce7bacc4766422abc478c5c895',
+          'answer': '166644f7a08261ae4107d6833b0a52a8',
           'choices': [
             'make_child_frame',
             'define',
@@ -63,16 +63,16 @@ test = {
         {
           'code': r"""
           scm> (define size 2)
-          cc3c061fb8167d02a4ddda1f1c19966e
+          ae481f76ec0c0306a4387ca650d0ec0a
           # locked
           scm> size
-          2b7cdec3904f986982cbd24a0bc12887
+          725437f086fad00d39b3b3621cfe9fef
           # locked
           scm> (define x (+ 7 3))
-          38ba916dc1f41eb239567ee41a251ecd
+          344572bfd411ffe1bccc40e3e63b0726
           # locked
           scm> x
-          4bc2fb48972a5d1ec1201b01e766a044
+          67d9366cb6f9986c22bf033e28662022
           # locked
           """,
           'hidden': False,

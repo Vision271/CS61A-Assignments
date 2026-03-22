@@ -7,10 +7,10 @@ test = {
         {
           'code': r"""
           >>> env = create_global_frame()
-          >>> twos = Pair(2, Pair(2, nil))
+          >>> twos = Link(2, Link(2, nil))
           >>> plus = BuiltinProcedure(scheme_add) # + procedure
           >>> scheme_apply(plus, twos, env) # Type SchemeError if you think this errors
-          46beb7deeeb5e9af1c8d785b12558317
+          9871f5a05c2faba882ad6bd9ba1b836e
           # locked
           """,
           'hidden': False,
@@ -22,7 +22,7 @@ test = {
           >>> env = create_global_frame()
           >>> plus = BuiltinProcedure(scheme_add) # + procedure
           >>> scheme_apply(plus, nil, env) # Remember what (+) evaluates to in scheme
-          a384c59daad07475a000a57b0b47b74f
+          fd0160de2f72728a572c943666b1d89b
           # locked
           """,
           'hidden': False,
@@ -32,10 +32,10 @@ test = {
         {
           'code': r"""
           >>> env = create_global_frame()
-          >>> twos = Pair(2, Pair(2, nil))
+          >>> twos = Link(2, Link(2, nil))
           >>> oddp = BuiltinProcedure(scheme_oddp) # odd? procedure
           >>> scheme_apply(oddp, twos, env) # Type SchemeError if you think this errors
-          ec908af60f03727428c7ee3f22ec3cd8
+          487e5d855a4749c37e82d995b26091f7
           # locked
           """,
           'hidden': False,
@@ -45,7 +45,7 @@ test = {
         {
           'code': r"""
           >>> env = create_global_frame()
-          >>> two = Pair(2, nil)
+          >>> two = Link(2, nil)
           >>> eval = BuiltinProcedure(scheme_eval, True) # eval procedure
           >>> scheme_apply(eval, two, env) # be sure to check need_env
           2
@@ -57,7 +57,7 @@ test = {
         {
           'code': r"""
           >>> env = create_global_frame()
-          >>> operands = Pair(2, Pair(3, nil))
+          >>> operands = Link(2, Link(3, nil))
           >>> add = lambda x, y: x + y
           >>> sum = BuiltinProcedure(add, False) # eval procedure
           >>> scheme_apply(sum, operands, env) # be sure to check need_env
@@ -70,7 +70,7 @@ test = {
         {
           'code': r"""
           >>> env = create_global_frame()
-          >>> operands = Pair(4, Pair(5, Pair(6, nil)))
+          >>> operands = Link(4, Link(5, Link(6, nil)))
           >>> mul = lambda x, y, z: x * y * z
           >>> prod = BuiltinProcedure(mul, False) # eval procedure
           >>> scheme_apply(prod, operands, env) # be sure to check need_env
@@ -83,7 +83,7 @@ test = {
         {
           'code': r"""
           >>> env = create_global_frame()
-          >>> operands = Pair(2, Pair(3, Pair(4, Pair(5, nil))))
+          >>> operands = Link(2, Link(3, Link(4, Link(5, nil))))
           >>> add = lambda a, b, c, d : a + b + c + d
           >>> sum = BuiltinProcedure(add, False) # eval procedure
           >>> scheme_apply(sum, operands, env) # be sure to check need_env
@@ -96,7 +96,7 @@ test = {
         {
           'code': r"""
           >>> env = create_global_frame()
-          >>> two_one = Pair(2, Pair(1, nil))
+          >>> two_one = Link(2, Link(1, nil))
           >>> minus = BuiltinProcedure(scheme_sub) # - procedure
           >>> scheme_apply(minus, two_one, env) # Make sure to add the arguments in the correct order!
           1
@@ -109,7 +109,7 @@ test = {
           'code': r"""
           >>> env = create_global_frame()
           >>> length = env.lookup("length")
-          >>> args = Pair(nil, nil) # passing in one argument, nil
+          >>> args = Link(nil, nil) # passing in one argument, nil
           >>> scheme_apply(length, args, env) # args.first can be nil, if nil is an argument for the function!
           0
           """,
@@ -176,12 +176,12 @@ test = {
         {
           'code': r"""
           >>> env = create_global_frame()
-          >>> one = Pair(1, nil)
+          >>> one = Link(1, nil)
           >>> def test_func(arg, env):
           ...     return arg + (1 if env else 0)
           >>> test_procedure = BuiltinProcedure(test_func, True)
           >>> scheme_apply(test_procedure, one, env)
-          2b7cdec3904f986982cbd24a0bc12887
+          725437f086fad00d39b3b3621cfe9fef
           # locked
           """,
           'hidden': False,

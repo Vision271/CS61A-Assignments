@@ -5,9 +5,8 @@ import numbers
 import operator
 import sys
 
-from pair import Pair, nil, repl_str
+from link import Link, nil, repl_str
 from scheme_reader import *
-from scheme_eval_apply import *
 from scheme_classes import *
 from scheme_utils import *
 
@@ -17,7 +16,7 @@ from scheme_utils import *
 #######################
 
 # A list of triples (NAME, PYTHON-FUNCTION, INTERNAL-NAME).  Added to by
-# builtin and used in scheme.create_global_frame.
+# builtin and used in create_global_frame.
 BUILTINS = []
 
 def builtin(*names, need_env=False):
@@ -62,7 +61,7 @@ def scheme_eqp(x, y):
 
 @builtin("pair?")
 def scheme_pairp(x):
-    return type(x).__name__ == 'Pair'
+    return type(x).__name__ == 'Link'
 
 @builtin("scheme-valid-cdr?")
 def scheme_valid_cdrp(x):
@@ -86,13 +85,11 @@ def scheme_cdr_stream(x):
 @builtin("length")
 def scheme_length(x):
     validate_type(x, scheme_listp, 0, 'length')
-    if x is nil:
-        return 0
-    return len(x)
+    return len_link(x)
 
 @builtin("cons")
 def scheme_cons(x, y):
-    return Pair(x, y)
+    return Link(x, y)
 
 @builtin("car")
 def scheme_car(x):
@@ -120,7 +117,7 @@ def scheme_set_cdr(x, y):
 def scheme_list(*vals):
     result = nil
     for e in reversed(vals):
-        result = Pair(e, result)
+        result = Link(e, result)
     return result
 
 @builtin("append")
@@ -132,10 +129,10 @@ def scheme_append(*vals):
         v = vals[i]
         if v is not nil:
             validate_type(v, scheme_pairp, i, 'append')
-            r = p = Pair(v.first, result)
+            r = p = Link(v.first, result)
             v = v.rest
             while scheme_pairp(v):
-                p.rest = Pair(v.first, result)
+                p.rest = Link(v.first, result)
                 p = p.rest
                 v = v.rest
             result = r
@@ -321,21 +318,23 @@ def scheme_exit():
 def scheme_map(fn, s, env):
     validate_type(fn, scheme_procedurep, 0, 'map')
     validate_type(s, scheme_listp, 1, 'map')
-    return s.map(lambda x: complete_apply(fn, Pair(x, nil), env))
+    from scheme_eval_apply import complete_apply
+    return map_link(lambda x: complete_apply(fn, Link(x, nil), env), s)
 
 @builtin("filter", need_env=True)
 def scheme_filter(fn, s, env):
     validate_type(fn, scheme_procedurep, 0, 'filter')
     validate_type(s, scheme_listp, 1, 'filter')
+    from scheme_eval_apply import complete_apply
     head, current = nil, nil
     while s is not nil:
         item, s = s.first, s.rest
-        if complete_apply(fn, Pair(item, nil), env):
+        if complete_apply(fn, Link(item, nil), env):
             if head is nil:
-                head = Pair(item, nil)
+                head = Link(item, nil)
                 current = head
             else:
-                current.rest = Pair(item, nil)
+                current.rest = Link(item, nil)
                 current = current.rest
     return head
 
@@ -344,6 +343,7 @@ def scheme_reduce(fn, s, env):
     validate_type(fn, scheme_procedurep, 0, 'reduce')
     validate_type(s, lambda x: x is not nil, 1, 'reduce')
     validate_type(s, scheme_listp, 1, 'reduce')
+    from scheme_eval_apply import complete_apply
     value, s = s.first, s.rest
     while s is not nil:
         value = complete_apply(fn, scheme_list(value, s.first), env)
@@ -593,7 +593,6 @@ def tscheme_exitonclick():
     if turtle is None:
         return
     _tscheme_prep()
-    # BEGIN SOLUTION NO PROMPT ALT="if _turtle_screen_on:"
     if builtins.TK_TURTLE:
         print("Close or click on turtle window to complete exit")
     if builtins.TURTLE_SAVE_PATH is not None:
@@ -655,3 +654,24 @@ def tscheme_write_to_file(path):
 def scheme_print_return(val1, val2):
     print(repl_str(val1))
     return val2
+
+def add_builtins(frame, funcs_and_names):
+    """Enter bindings in FUNCS_AND_NAMES into FRAME, an environment frame,
+    as built-in procedures. Each item in FUNCS_AND_NAMES has the form
+    (NAME, PYTHON-FUNCTION, INTERNAL-NAME)."""
+    for name, py_func, proc_name, need_env in funcs_and_names:
+        frame.define(name, BuiltinProcedure(py_func, name=proc_name, need_env=need_env))
+
+def create_global_frame():
+    """Create a global frame populated by builtins (including eval and apply)."""
+    env = Frame(None)
+    env.define('undefined', None)
+    add_builtins(env, BUILTINS)
+
+    # Add eval and apply to the global frame
+    # Import here to avoid circular dependency
+    from scheme_eval_apply import scheme_eval, complete_apply
+    env.define('eval', BuiltinProcedure(scheme_eval, True, 'eval'))
+    env.define('apply', BuiltinProcedure(complete_apply, True, 'apply'))
+
+    return env

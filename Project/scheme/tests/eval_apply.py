@@ -5,20 +5,20 @@ test = {
     {
       'cases': [
         {
-          'answer': '894f36490989bdbb7f0e397e9c74a9da',
+          'answer': '9bef332e7a4ee9e0a88f50e7c8102859',
           'choices': [
             'Call expressions and special forms',
             'Only call expressions',
             'Only special forms',
-            'All expressions are represented as Pairs'
+            'All expressions are represented as Links'
           ],
           'hidden': False,
           'locked': True,
           'multiline': False,
-          'question': 'What types of expressions are represented as Pairs?'
+          'question': 'What types of expressions are represented as Links?'
         },
         {
-          'answer': 'f9007bdc473e42efc27b7ee858aff42e',
+          'answer': '78281c8aa60cfeb28cc419e45eded414',
           'choices': [
             'env.find(name)',
             'scheme_symbolp(expr)',
@@ -31,7 +31,7 @@ test = {
           'question': 'What expression in the body of scheme_eval finds the value of a name?'
         },
         {
-          'answer': 'be44f46671dafd5aa02dcb249280afc6',
+          'answer': '8e2984abf58403830db140aa255877e8',
           'choices': [
             r"""
             Check if the first element in the list is a symbol and that the
@@ -46,7 +46,7 @@ test = {
           'question': 'How do we know if a given combination is a special form?'
         },
         {
-          'answer': '25f454d6138d3e164c66ab40237676c8',
+          'answer': '760951e4c03e3f903a39510d6f9260cd',
           'choices': [
             'I only',
             'II only',
@@ -72,7 +72,7 @@ test = {
           """
         },
         {
-          'answer': '9257b8821d358e91004e461beaadc82b',
+          'answer': '4b42cf68a456920260c67272f303ed1e',
           'choices': [
             'SchemeError("malformed list: (1)")',
             'SchemeError("1 is not callable")',

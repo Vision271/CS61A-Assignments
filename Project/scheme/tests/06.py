@@ -6,13 +6,13 @@ test = {
       'cases': [
         {
           'code': r"""
-          >>> eval_all(Pair(2, nil), env)
-          2b7cdec3904f986982cbd24a0bc12887
+          >>> eval_all(Link(2, nil), env)
+          725437f086fad00d39b3b3621cfe9fef
           # locked
           # choice: 2
           # choice: SchemeError
-          >>> eval_all(Pair(4, Pair(5, nil)), env)
-          b33c0f7206201b4aaeae595493888600
+          >>> eval_all(Link(4, Link(5, nil)), env)
+          9a3da8c3f3291f1ba3284a28cfeb60f8
           # locked
           # choice: 4
           # choice: 5
@@ -26,11 +26,11 @@ test = {
         },
         {
           'code': r"""
-          >>> s = Pair(1, Pair(2, Pair(3, nil)))
+          >>> s = Link(1, Link(2, Link(3, nil)))
           >>> eval_all(s, env)
           3
           >>> s     # The list should not be mutated!
-          Pair(1, Pair(2, Pair(3, nil)))
+          Link(1, Link(2, Link(3)))
           """,
           'hidden': False,
           'locked': False,
@@ -50,10 +50,10 @@ test = {
         {
           'code': r"""
           scm> (begin (+ 2 3) (+ 5 6))
-          20169e9f217f8370ba4f37a3cf0cc2b3
+          8a45d840829a1008ef79013f7d8df6fd
           # locked
           scm> (begin (define x 3) x)
-          3c7e8a3a2176a696c3a66418f78dff6b
+          71373a588b7d2da6b021a6a9cb2a416f
           # locked
           """,
           'hidden': False,
@@ -63,23 +63,23 @@ test = {
         {
           'code': r"""
           scm> (begin 30 '(+ 2 2))
-          85d97cf58c044cc51a6a7d4315b4ad71
+          231e95c67da5138d11a0d1b68ee03d92
           # locked
           # choice: (+ 2 2)
           # choice: '(+ 2 2)
           # choice: 4
           # choice: 30
           scm> (define x 0)
-          38ba916dc1f41eb239567ee41a251ecd
+          344572bfd411ffe1bccc40e3e63b0726
           # locked
           scm> (begin (define x (+ x 1)) 42 (define y (+ x 1)))
-          1a9a3321b8b99a0f9291d89be986e74c
+          e8964e1ed0bd9300da7e470e362a919c
           # locked
           scm> x
-          eb892a26497f936d1f6cae54aacc5f51
+          e9c72ee24bf5f0040e3f510cd1634fbe
           # locked
           scm> y
-          2b7cdec3904f986982cbd24a0bc12887
+          725437f086fad00d39b3b3621cfe9fef
           # locked
           """,
           'hidden': False,

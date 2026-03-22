@@ -3,13 +3,11 @@
 import sys
 import os
 
-sys.path.append("scheme_reader")
-
 from scheme_classes import *
-from scheme_forms import *
 from scheme_eval_apply import *
 from scheme_builtins import *
 from scheme_reader import *
+from scheme_forms import *
 from ucb import main, trace
 
 
@@ -55,23 +53,18 @@ def read_eval_print_loop(next_line, env, interactive=False, quiet=False,
             print()
             return
 
-def add_builtins(frame, funcs_and_names):
-    """Enter bindings in FUNCS_AND_NAMES into FRAME, an environment frame,
-    as built-in procedures. Each item in FUNCS_AND_NAMES has the form
-    (NAME, PYTHON-FUNCTION, INTERNAL-NAME)."""
-    for name, py_func, proc_name, need_env in funcs_and_names:
-        frame.define(name, BuiltinProcedure(py_func, name=proc_name, need_env=need_env))
 
-def create_global_frame():
+
+def create_global_frame_with_eval_apply():
     """Initialize and return a single-frame environment with built-in names."""
-    env = Frame(None)
+    env = create_global_frame()
     env.define('eval',
                BuiltinProcedure(scheme_eval, True, 'eval'))
     env.define('apply',
                BuiltinProcedure(complete_apply, True, 'apply'))
-    env.define('undefined', None)
-    add_builtins(env, BUILTINS)
     return env
+
+
 
 @main
 def run(*argv):
@@ -106,6 +99,7 @@ def run(*argv):
                 return buffer_lines(lines)
             interactive = False
 
-    read_eval_print_loop(next_line, create_global_frame(), startup=True,
-                         interactive=interactive, load_files=load_files)
+    read_eval_print_loop(next_line, create_global_frame_with_eval_apply(),
+                         startup=True, interactive=interactive,
+                         load_files=load_files)
     tscheme_exitonclick()

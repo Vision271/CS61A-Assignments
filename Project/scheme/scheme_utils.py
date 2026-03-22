@@ -1,6 +1,7 @@
 import numbers
 
 from scheme_classes import *
+from scheme_reader import read_line
 
 #################
 # Type Checking #
@@ -12,7 +13,7 @@ def scheme_procedurep(x):
 def scheme_listp(x):
     """Return whether x is a well-formed list. Assumes no cycles."""
     while x is not nil:
-        if not isinstance(x, Pair):
+        if not isinstance(x, Link):
             return False
         x = x.rest
     return True
@@ -38,7 +39,7 @@ def scheme_symbolp(x):
     return isinstance(x, str) and not scheme_stringp(x)
 
 def scheme_nullp(x):
-    return type(x).__name__ == 'nil'
+    return x == nil
 
 def scheme_atomp(x):
     return (scheme_booleanp(x) or scheme_numberp(x) or scheme_symbolp(x) or
@@ -79,7 +80,7 @@ def validate_form(expr, min, max=float('inf')):
     """
     if not scheme_listp(expr):
         raise SchemeError('badly formed expression: ' + repl_str(expr))
-    length = len(expr)
+    length = len_link(expr)
     if length < min:
         raise SchemeError('too few operands in form')
     elif length > max:
@@ -100,6 +101,6 @@ def validate_formals(formals):
             raise SchemeError('duplicate symbol: {0}'.format(symbol))
         symbols.add(symbol)
 
-    while isinstance(formals, Pair):
-        validate_and_add(formals.first, formals.rest is nil)
+    while isinstance(formals, Link):
+        validate_and_add(formals.first, formals.rest == nil)
         formals = formals.rest

@@ -1,5 +1,7 @@
 HW_SOURCE_FILE = __file__
 
+from operator import add
+from functools import reduce
 
 def num_eights(n):
     """Returns the number of times 8 appears as a digit of n.
@@ -25,7 +27,7 @@ def num_eights(n):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    return str(n).count('8')
 
 def digit_distance(n):
     """Determines the digit distance of n.
@@ -47,7 +49,7 @@ def digit_distance(n):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    return sum([abs(int(str(n)[i+1])-int(str(n)[i])) for i in range(len(str(n))-1)])
 
 def interleaved_sum(n, odd_func, even_func):
     """Compute the sum odd_func(1) + even_func(2) + odd_func(3) + ..., up
@@ -71,7 +73,7 @@ def interleaved_sum(n, odd_func, even_func):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    return sum([odd_func(i) for i in range(1,n+1,2)]+[even_func(i) for i in range(2,n+1,2)])
 
 def next_smaller_dollar(bill):
     """Returns the next smaller bill in order."""
@@ -107,7 +109,19 @@ def count_dollars(total):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    def cnt2(total,now):
+        if total<0:
+            return 0
+        elif total==0:
+            return 1
+        else:
+            ret=0
+            if total>=now:
+                ret+=cnt2(total-now,now)
+            if now!=1:
+                ret+=cnt2(total,next_smaller_dollar(now))
+            return ret 
+    return cnt2(total,100)
 
 def next_larger_dollar(bill):
     """Returns the next larger bill in order."""

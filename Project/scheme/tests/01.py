@@ -9,17 +9,17 @@ test = {
           >>> global_frame = create_global_frame()
           >>> global_frame.define("x", 3)
           >>> global_frame.parent is None
-          b1796eff8a8e977439f97b5c6881a282
+          d4dc88cbd250e1e387bfd72d47f43ffd
           # locked
           >>> global_frame.lookup("x")
-          3c7e8a3a2176a696c3a66418f78dff6b
+          71373a588b7d2da6b021a6a9cb2a416f
           # locked
           >>> global_frame.define("x", 2)
           >>> global_frame.lookup("x")
-          2b7cdec3904f986982cbd24a0bc12887
+          725437f086fad00d39b3b3621cfe9fef
           # locked
           >>> global_frame.lookup("foo")
-          ec908af60f03727428c7ee3f22ec3cd8
+          487e5d855a4749c37e82d995b26091f7
           # locked
           # choice: None
           # choice: SchemeError
@@ -35,14 +35,14 @@ test = {
           >>> first_frame.define("x", 3)
           >>> second_frame = Frame(first_frame)
           >>> second_frame.parent == first_frame
-          b1796eff8a8e977439f97b5c6881a282
+          d4dc88cbd250e1e387bfd72d47f43ffd
           # locked
           >>> second_frame.define("y", False)
           >>> second_frame.lookup("x")
-          3c7e8a3a2176a696c3a66418f78dff6b
+          71373a588b7d2da6b021a6a9cb2a416f
           # locked
           >>> second_frame.lookup("y")
-          96ae38315990d5fb27de4225d8b470ba
+          eb46eb687223c688890be91ff6e2b9b4
           # locked
           """,
           'hidden': False,

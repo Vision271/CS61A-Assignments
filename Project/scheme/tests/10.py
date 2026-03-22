@@ -7,10 +7,10 @@ test = {
         {
           'code': r"""
           scm> (define (f x y) (+ x y))
-          715124391110b4a3beec8c9ba1ec3097
+          3d7c962867998a3bb3bb3acf6178a0fd
           # locked
           scm> f
-          1456de84c3edf333b6f7aee0c0624b20
+          d67e9003bbdbf8509fca26654472810c
           # locked
           # choice: (lambda (x y) (+ x y))
           # choice: (lambda (f x y) (+ x y))
@@ -88,7 +88,7 @@ test = {
           >>> scheme_eval(inp, env)
           'f'
           >>> scheme_eval('f', env)
-          LambdaProcedure(Pair('x', nil), Pair('x', nil), <Global Frame>)
+          LambdaProcedure(Link('x'), Link('x'), <Global Frame>)
           >>> inp == read_line("(define (f x) x)") # Don't mutate the input expression!
           True
           """,

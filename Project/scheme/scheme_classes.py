@@ -1,6 +1,5 @@
-import builtins
 
-from pair import *
+from link import *
 
 class SchemeError(Exception):
     """Exception indicating an error in a Scheme program."""
@@ -26,13 +25,19 @@ class Frame:
     def define(self, symbol, value):
         """Define Scheme SYMBOL to have VALUE."""
         # BEGIN PROBLEM 1
-        "*** YOUR CODE HERE ***"
+        self.bindings[symbol]=value
         # END PROBLEM 1
 
     def lookup(self, symbol):
         """Return the value bound to SYMBOL. Errors if SYMBOL is not found."""
         # BEGIN PROBLEM 1
-        "*** YOUR CODE HERE ***"
+        frame=self
+        while frame is not None:
+            value=frame.bindings.get(symbol)
+            if value is None:
+                frame=frame.parent
+            else:
+                return value
         # END PROBLEM 1
         raise SchemeError('unknown identifier: {0}'.format(symbol))
 
@@ -41,17 +46,22 @@ class Frame:
         """Return a new local frame whose parent is SELF, in which the symbols
         in a Scheme list of formal parameters FORMALS are bound to the Scheme
         values in the Scheme list VALS. Both FORMALS and VALS are represented
-        as Pairs. Raise an error if too many or too few vals are given.
+        as Links. Raise an error if too many or too few vals are given.
 
-        >>> env = create_global_frame()
+        >>> env = Frame(None)
+        >>> from scheme_reader import read_line
         >>> formals, expressions = read_line('(a b c)'), read_line('(1 2 3)')
         >>> env.make_child_frame(formals, expressions)
         <{a: 1, b: 2, c: 3} -> <Global Frame>>
         """
-        if len(formals) != len(vals):
+        if len_link(formals) != len_link(vals):
             raise SchemeError('Incorrect number of arguments to function call')
         # BEGIN PROBLEM 8
-        "*** YOUR CODE HERE ***"
+        child=Frame(self)
+        while formals is not nil:
+            child.define(formals.first,vals.first)
+            formals,vals=formals.rest,vals.rest
+        return child
         # END PROBLEM 8
 
 ##############
@@ -89,7 +99,7 @@ class LambdaProcedure(Procedure):
         self.env = env
 
     def __str__(self):
-        return str(Pair('lambda', Pair(self.formals, self.body)))
+        return str(Link('lambda', Link(self.formals, self.body)))
 
     def __repr__(self):
         return 'LambdaProcedure({0}, {1}, {2})'.format(
@@ -114,7 +124,7 @@ class MuProcedure(Procedure):
         self.body = body
 
     def __str__(self):
-        return str(Pair('mu', Pair(self.formals, self.body)))
+        return str(Link('mu', Link(self.formals, self.body)))
 
     def __repr__(self):
         return 'MuProcedure({0}, {1})'.format(

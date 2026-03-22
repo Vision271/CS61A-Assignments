@@ -36,15 +36,17 @@ def do_define_form(expressions, env):
         # assigning a name to a value e.g. (define x (+ 1 2))
         validate_form(expressions, 2, 2) # Checks that expressions is a list of length exactly 2
         # BEGIN PROBLEM 4
-        "*** YOUR CODE HERE ***"
+        env.define(signature,scheme_eval(expressions.rest.first))
+        return signature
         # END PROBLEM 4
-    elif isinstance(signature, Pair) and scheme_symbolp(signature.first):
+    elif isinstance(signature, Link) and scheme_symbolp(signature.first):
         # defining a named procedure e.g. (define (f x y) (+ x y))
         # BEGIN PROBLEM 10
-        "*** YOUR CODE HERE ***"
+        env.define(signature.first,do_lambda_form(Link(signature.rest,expressions.rest),env))
+        return signature.first
         # END PROBLEM 10
     else:
-        bad_signature = signature.first if isinstance(signature, Pair) else signature
+        bad_signature = signature.first if isinstance(signature, Link) else signature
         raise SchemeError('non-symbol: {0}'.format(bad_signature))
 
 def do_quote_form(expressions, env):
@@ -52,11 +54,11 @@ def do_quote_form(expressions, env):
 
     >>> env = create_global_frame()
     >>> do_quote_form(read_line("((+ x 2))"), env) # evaluating (quote (+ x 2))
-    Pair('+', Pair('x', Pair(2, nil)))
+    Link('+', Link('x', Link(2)))
     """
     validate_form(expressions, 1, 1)
     # BEGIN PROBLEM 5
-    "*** YOUR CODE HERE ***"
+    return expressions.first
     # END PROBLEM 5
 
 def do_begin_form(expressions, env):
@@ -76,13 +78,13 @@ def do_lambda_form(expressions, env):
 
     >>> env = create_global_frame()
     >>> do_lambda_form(read_line("((x) (+ x 2))"), env) # evaluating (lambda (x) (+ x 2))
-    LambdaProcedure(Pair('x', nil), Pair(Pair('+', Pair('x', Pair(2, nil))), nil), <Global Frame>)
+    LambdaProcedure(Link('x'), Link(Link('+', Link('x', Link(2)))), <Global Frame>)
     """
     validate_form(expressions, 2)
     formals = expressions.first
     validate_formals(formals)
     # BEGIN PROBLEM 7
-    "*** YOUR CODE HERE ***"
+    return LambdaProcedure(formals,expressions.rest,env)
     # END PROBLEM 7
 
 def do_if_form(expressions, env):
@@ -97,7 +99,7 @@ def do_if_form(expressions, env):
     validate_form(expressions, 2, 3)
     if is_scheme_true(scheme_eval(expressions.first, env)):
         return scheme_eval(expressions.rest.first, env)
-    elif len(expressions) == 3:
+    elif len_link(expressions) == 3:
         return scheme_eval(expressions.rest.rest.first, env)
 
 def do_and_form(expressions, env):
@@ -115,7 +117,12 @@ def do_and_form(expressions, env):
     False
     """
     # BEGIN PROBLEM 12
-    "*** YOUR CODE HERE ***"
+    res=True
+    while expressions is not nil:
+        if is_scheme_false(scheme_eval(expressions.firs,env)):
+            return False
+        expressions=expressions.rest
+    return res
     # END PROBLEM 12
 
 def do_or_form(expressions, env):
@@ -133,7 +140,12 @@ def do_or_form(expressions, env):
     6
     """
     # BEGIN PROBLEM 12
-    "*** YOUR CODE HERE ***"
+    res=False
+    while expressions is not nil:
+        if is_scheme_true(scheme_eval(expressions.first,env)):
+            return True
+        expressions=expressions.rest
+    return res
     # END PROBLEM 12
 
 def do_cond_form(expressions, env):
@@ -152,10 +164,13 @@ def do_cond_form(expressions, env):
         else:
             test = scheme_eval(clause.first, env)
         if is_scheme_true(test):
-            # BEGIN PROBLEM 13
-            "*** YOUR CODE HERE ***"
-            # END PROBLEM 13
+            # BEGIN OPTIONAL PROBLEM 1
+            if clause.rest is nil:
+                return test
+            return eval_all(clause.rest,env)
+            # END OPTIONAL PROBLEM 1
         expressions = expressions.rest
+    return None
 
 def do_let_form(expressions, env):
     """Evaluate a let form.
@@ -176,9 +191,14 @@ def make_let_frame(bindings, env):
     if not scheme_listp(bindings):
         raise SchemeError('bad bindings list in let form')
     names = vals = nil
-    # BEGIN PROBLEM 14
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 14
+    # BEGIN OPTIONAL PROBLEM 2
+    while bindings is not nil:
+        validate_form(bindings.first,2,2)
+        names=Link(bindings.first.first,names)
+        vals=Link(scheme_eval(bindings.first.rest.first,env),vals)
+        bindings=bindings.rest  
+    validate_formals(names)
+    # END OPTIONAL PROBLEM 2
     return env.make_child_frame(names, vals)
 
 
@@ -200,7 +220,7 @@ def do_quasiquote_form(expressions, env):
         elif val.first == 'quasiquote':
             level += 1
 
-        return val.map(lambda elem: quasiquote_item(elem, env, level))
+        return map_link(lambda elem: quasiquote_item(elem, env, level), val)
 
     validate_form(expressions, 1, 1)
     return quasiquote_item(expressions.first, env, 1)
@@ -219,7 +239,7 @@ def do_mu_form(expressions, env):
     formals = expressions.first
     validate_formals(formals)
     # BEGIN PROBLEM 11
-    "*** YOUR CODE HERE ***"
+    return MuProcedure(formals,expressions.rest)
     # END PROBLEM 11
 
 

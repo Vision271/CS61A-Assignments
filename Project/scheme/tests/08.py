@@ -6,20 +6,20 @@ test = {
       'cases': [
         {
           'code': r"""
-          >>> formals = Pair('a', Pair('b', Pair('c', nil)))
-          >>> vals = Pair(1, Pair(2, Pair(3, nil)))
+          >>> formals = Link('a', Link('b', Link('c', nil)))
+          >>> vals = Link(1, Link(2, Link(3, nil)))
           >>> frame = global_frame.make_child_frame(formals, vals)
           >>> global_frame.lookup('a') # Type SchemeError if you think this errors
-          ec908af60f03727428c7ee3f22ec3cd8
+          487e5d855a4749c37e82d995b26091f7
           # locked
           >>> frame.lookup('a')        # Type SchemeError if you think this errors
-          eb892a26497f936d1f6cae54aacc5f51
+          e9c72ee24bf5f0040e3f510cd1634fbe
           # locked
           >>> frame.lookup('b')        # Type SchemeError if you think this errors
-          2b7cdec3904f986982cbd24a0bc12887
+          725437f086fad00d39b3b3621cfe9fef
           # locked
           >>> frame.lookup('c')        # Type SchemeError if you think this errors
-          3c7e8a3a2176a696c3a66418f78dff6b
+          71373a588b7d2da6b021a6a9cb2a416f
           # locked
           """,
           'hidden': False,
@@ -30,7 +30,7 @@ test = {
           'code': r"""
           >>> frame = global_frame.make_child_frame(nil, nil)
           >>> frame.parent is global_frame
-          b1796eff8a8e977439f97b5c6881a282
+          d4dc88cbd250e1e387bfd72d47f43ffd
           # locked
           """,
           'hidden': False,
@@ -62,7 +62,7 @@ test = {
         {
           'code': r"""
           >>> # More argument values than formal parameters
-          >>> global_frame.make_child_frame(Pair('a', nil), Pair(1, Pair(2, Pair(3, nil))))
+          >>> global_frame.make_child_frame(Link('a', nil), Link(1, Link(2, Link(3, nil))))
           SchemeError
           """,
           'hidden': False,
@@ -72,7 +72,7 @@ test = {
         {
           'code': r"""
           >>> # More formal parameters than argument values
-          >>> global_frame.make_child_frame(Pair('a', Pair('b', Pair('c', nil))), Pair(1, nil))
+          >>> global_frame.make_child_frame(Link('a', Link('b', Link('c', nil))), Link(1, nil))
           SchemeError
           """,
           'hidden': False,
@@ -82,20 +82,20 @@ test = {
         {
           'code': r"""
           >>> # Values can be pairs.
-          >>> formals = Pair('a', Pair('b', nil))
-          >>> values = Pair(Pair(1, nil), Pair(Pair(2, nil), nil))
+          >>> formals = Link('a', Link('b', nil))
+          >>> values = Link(Link(1, nil), Link(Link(2, nil), nil))
           >>> frame = global_frame.make_child_frame(formals, values)
           >>> frame.lookup('a')
-          Pair(1, nil)
+          Link(1)
           >>> frame.lookup('b')
-          Pair(2, nil)
+          Link(2)
           >>> frame2 = frame.make_child_frame(nil, nil) # Bind parents correctly
           >>> frame2.lookup('a')
-          Pair(1, nil)
+          Link(1)
           >>> formals # Ensure that formals was not mutated
-          Pair('a', Pair('b', nil))
+          Link('a', Link('b'))
           >>> values # Ensure that values was not mutated
-          Pair(Pair(1, nil), Pair(Pair(2, nil), nil))
+          Link(Link(1), Link(Link(2)))
           """,
           'hidden': False,
           'locked': False,

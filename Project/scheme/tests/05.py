@@ -5,10 +5,10 @@ test = {
     {
       'cases': [
         {
-          'answer': 'fd4dd892ccea3adcf9446dc4a9738d47',
+          'answer': 'b4aa547bac1b887dfd7387940e9b4a0a',
           'choices': [
             r"""
-            Pair('quote', Pair(A, nil)), where:
+            Link('quote', Link(A, nil)), where:
                 A is the quoted expression
             """,
             r"""
@@ -16,7 +16,7 @@ test = {
                 A is the quoted expression
             """,
             r"""
-            Pair(A, nil), where:
+            Link(A, nil), where:
                 A is the quoted expression
             """,
             r"""
@@ -37,15 +37,15 @@ test = {
       'cases': [
         {
           'code': r"""
-          >>> do_quote_form(Pair(3, nil), global_frame)
-          3c7e8a3a2176a696c3a66418f78dff6b
+          >>> do_quote_form(Link(3, nil), global_frame)
+          71373a588b7d2da6b021a6a9cb2a416f
           # locked
-          >>> do_quote_form(Pair('hi', nil), global_frame)
-          95448591e64e04a7a7885d5fb9b45583
+          >>> do_quote_form(Link('hi', nil), global_frame)
+          7416b5e74e5b93f7c641ed723332329a
           # locked
-          >>> expr = Pair(Pair('+', Pair('x', Pair(2, nil))), nil)
-          >>> do_quote_form(expr, global_frame) # Make sure to use Pair notation
-          2301ee746b57783004f00f39498fdaed
+          >>> expr = Link(Link('+', Link('x', Link(2))))
+          >>> do_quote_form(expr, global_frame) # Make sure to use Link notation
+          794b71f6db0ce00c40ebf39e9ca9b174
           # locked
           """,
           'hidden': False,
